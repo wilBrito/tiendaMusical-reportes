@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.wilProject.tiendaMusicalReportes.services.DropboxAPIService;
+import com.wilProject.tiendaMusicalReportes.services.MailService;
 
 @Component
 @Path("/reportesWS")
@@ -25,6 +26,9 @@ public class ReportesWS {
 	
 	@Autowired
 	private DropboxAPIService dropboxAPIServiceImpl;
+	
+	@Autowired
+	private MailService mailServiceImpl;
 
 	@GET
 	@Path("/pruebaWS")
@@ -41,6 +45,8 @@ public class ReportesWS {
 		DbxClientV2 dbxClientV2 = new DbxClientV2(dbxRequestConfig, ACCESS_TOKEN);
 		
 		Response response = this.dropboxAPIServiceImpl.descargarReporte(dbxClientV2, orderID, cliente);
+		
+		this.mailServiceImpl.enviarEmail(dbxClientV2, destinatario, cliente, orderID);
 		
 		return response;
 		
